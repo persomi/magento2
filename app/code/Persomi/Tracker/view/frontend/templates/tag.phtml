@@ -1,0 +1,27 @@
+<?php try { ?>
+    <?php
+    /* @var $this Persomi\Tracker\Block\Tag */
+    $persomi_app_id = $this->getConfig('persomi_tag/tag/app_id');
+    $persomi_tag_enabled = $this->getConfig('persomi_tag/tag/enabled');
+    $persomi_output_user_id = $this->getConfig('persomi_tag/tag/output_user_id');
+    ?>
+    <?php if ($persomi_tag_enabled && $persomi_app_id) : ?>
+<script>
+var _snaq = _snaq || [];
+<?php
+if($persomi_output_user_id) {
+    $session = $this->customerSession;
+    if($session->isLoggedIn()) {
+        $customerData = $session->getCustomer();
+        $persomiCode = "_snaq.push(['setUserId', '%s']);\n";
+        echo sprintf($persomiCode, $customerData->getId());
+    }
+}
+?>
+(function(d,t,u,e,p){e=d.createElement(t);e.async=1;e.src=u;
+p=d.getElementsByTagName(t)[0];p.parentNode.insertBefore(e,p);
+})(document,'script','//js.persomi.com/<?php echo $persomi_app_id; ?>');
+</script>
+    <?php endif; ?>
+<?php } catch (Exception $e) {
+} ?>
